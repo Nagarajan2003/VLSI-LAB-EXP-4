@@ -51,27 +51,243 @@ COUNTER
 ![image](https://github.com/navaneethans/VLSI-LAB-EXP-4/assets/6987778/a1fc5f68-aafb-49a1-93d2-779529f525fa)
 
 
-  
-PROCEDURE:
-STEP:1  Start  the Xilinx navigator, Select and Name the New project.
-STEP:2  Select the device family, device, package and speed.       
-STEP:3  Select new source in the New Project and select Verilog Module as the Source type.                       
-STEP:4  Type the File Name and Click Next and then finish button. Type the code and save it.
-STEP:5  Select the Behavioral Simulation in the Source Window and click the check syntax.                       
-STEP:6  Click the simulation to simulate the program and  give the inputs and verify the outputs as per the truth table.               
-STEP:7  Select the Implementation in the Sources Window and select the required file in the Processes Window.
-STEP:8  Select Check Syntax from the Synthesize  XST Process. Double Click in the  FloorplanArea/IO/Logic-Post Synthesis process in the User Constraints process group. UCF(User constraint File) is obtained. 
-STEP:9  In the Design Object List Window, enter the pin location for each pin in the Loc column Select save from the File menu.
-STEP:10 Double click on the Implement Design and double click on the Generate Programming File to create a bitstream of the design.(.v) file is converted into .bit file here.
-STEP:11  On the board, by giving required input, the LEDs starts to glow light, indicating the output.
 
-VERILOG CODE
+EXPERIMENTS :
 
-   <<< TYPE YOUR VERILOG CODE >>>
+#1
 
-OUTPUT WAVEFORM
- <<< PASTE YOUR OUTPUT WAVEFORM >>>
+D FLIP FLOP :-
 
-RESULT
+Code:
+```
+module dff(d,clk,rst,q);
+input d,clk,rst;
+output reg q;
+always @(posedge clk)
+begin
+if (rst==1)
+q=1'b0;
+else
+q=d;
+end
+endmodule
+```
+
+OUTPUT:-
+
+Simulation :
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/ebd254db-2710-495e-b434-d138d4fc5787)
+
+Elaborated Design :
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/5a6738c0-4c7d-4c6b-8dbb-bf922240b524)
 
 
+#2
+
+JK FLIP FLOP:-
+
+Code:
+```
+module JK_flipflop (q, q_bar, j,k, clk, reset);
+  input j,k,clk, reset;
+  output reg q;
+  output q_bar;
+  always@(posedge clk) begin
+    if(!reset)        q <= 0;
+    else 
+  begin
+      case({j,k})
+        2'b00: q <= q;  
+        2'b01: q <= 1'b0; 
+        2'b10: q <= 1'b1;
+        2'b11: q <= ~q; 
+      endcase
+    end
+  end
+  assign q_bar = ~q;
+endmodule
+```
+OUTPUUT:-
+
+Simulation Output:
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/c2854e6e-e908-4084-a99b-fe13efc3e33f)
+
+Elaborated Design:
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/36ce69ce-bbea-45e4-a238-63f6bd14c563)
+
+#3
+MOD 10 COUNTER :-
+
+Code :
+```
+module counter(
+input clk,rst,enable,
+output reg [3:0]counter_output
+);
+always@ (posedge clk)
+begin 
+if( rst | counter_output==4'b1001)
+counter_output <= 4'b0000;
+else if(enable)
+counter_output <= counter_output + 1;
+else
+counter_output <= 0;
+end
+endmodule
+```
+OUTPUT:-
+
+Simulation :
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/6ce15159-f37e-4e49-bd4c-6dbeea845958)
+
+Elaborated Design :
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/a855b92a-9460-40d1-8b25-43bdc5996e26)
+
+#4
+
+Ripple Counter:-
+
+Code :
+```
+module D_FF(q, d, clk, reset);
+output q;
+input d, clk, reset;
+reg q;
+always @(posedge reset or negedge clk)
+if (reset)
+q = 1'b0;
+else
+q = d;
+endmodule
+module T_FF(q, clk, reset);
+output q;
+input clk, reset;
+wire d;
+D_FF dff0(q, d, clk, reset);
+not n1(d, q); 
+endmodule
+module ripple_carry_counter(q, clk, reset);
+output [3:0] q;
+input clk, reset;
+T_FF tffo(q[0], clk, reset);
+T_FF tff1(q[1], q[0], reset);
+T_FF tff2(q[2], q[1], reset);
+T_FF tff3(q[3], q[2], reset);
+endmodule
+```
+
+OUTPUT:-
+
+Simulation:
+
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/5d5ac093-806e-40f0-a26d-8fbc853d44b4)
+
+Elaborated Design :
+
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/2da80146-b544-476d-a316-2f9a419e1b58)
+
+#5
+
+SR FLIPFLOP :-
+
+Code :
+
+```
+module SR_flipflop (q, q_bar, s,r, clk, reset);
+  input s,r,clk, reset;
+  output reg q;
+  output q_bar;
+  always@(posedge clk) begin 
+    if(!reset)�        q <= 0;
+    else 
+  begin
+      case({s,r})
+        2'b00: q <= q;    
+        2'b01: q <= 1'b0; 
+        2'b10: q <= 1'b1; 
+        2'b11: q <= 1'bx; 
+      endcase
+    end
+  end
+  assign q_bar = ~q;
+endmodule
+```
+OUTPUT:-
+
+Simulation :
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/85a009e3-d195-4b87-884e-4b299f106f4a)
+
+Elaborated Design :
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/07ea67e6-b2e4-4418-9b19-ceda0e1815ee)
+
+#6
+
+T FLIP FLOP :-
+
+Code :
+```
+module tff (t,clk, rstn,q);  
+ input t,clk, rstn;
+ output reg q;
+  always @ (posedge clk) begin  
+    if (!rstn)  
+      q <= 0;  
+    else  
+        if (t)  
+            q <= ~q;  
+        else  
+            q <= q;  
+  end  
+endmodule
+```
+OUTPUT:-
+
+Simulation :
+
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/794aebcd-e545-4a29-9578-fc25f5fcb299)
+
+Elaborated Design :
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/3a1c6a5b-8e1d-45d2-a864-d9623eacd63a)
+
+#7
+
+UP DOWN COUNTER :-
+
+Code:
+
+```
+module updown_counter(clk,rst,updown,out);
+input clk,rst,updown;
+output reg [3:0]out;
+always@(posedge clk)
+begin
+if (rst==1)
+out=4'b0000;
+else if(updown==1)
+out=out+1;
+else
+out=out-1;
+end
+endmodule
+```
+OUTPUT:-
+
+Simulation:-
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/9c73c3f7-1d5a-4bde-ac4c-ba4a4cc25347)
+Elaborated Design:-
+
+![image](https://github.com/Nagarajan2003/VLSI-LAB-EXP-4/assets/164840481/a198d78b-5e09-4173-a4ee-d1503f36039f)
+
+
+RESULT :
+
+Simulate And Synthesis SR, JK, T, D - FLIPFLOP, COUNTER DESIGN is Successfully Verified using Vivado Software.
